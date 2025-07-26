@@ -1,6 +1,6 @@
 import pandas as pd
 from sqlalchemy import text
-from ..database import get_engine
+from ..database.connection import get_engine
 
 # 1. Conexión usando el módulo centralizado de base de datos
 engine = get_engine()

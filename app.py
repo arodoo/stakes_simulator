@@ -36,12 +36,12 @@ from .view_canvas import ViewCanvas
 class EmulatorApp:
     """Main application class for the vehicle emulator."""
 
-    def __init__(self, root: tk.Tk, data_dir: str) -> None:
+    def __init__(self, root: tk.Tk) -> None:
         self.root = root
         self.root.title("Vehicle Trajectory Emulator")
         # Attempt to load data
         try:
-            self.data_manager = DataManager(data_dir)
+            self.data_manager = DataManager()
         except Exception as exc:
             print(f"ERROR: Failed to initialise data: {exc}")
             # If data cannot be loaded there is no point continuing

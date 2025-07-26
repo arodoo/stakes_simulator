@@ -3,7 +3,7 @@ data_manager.py
 ~~~~~~~~~~~~~~~~
 
 This module defines the :class:`DataManager` class which encapsulates
-all logic related to loading the source Excel files, normalising
+all logic related to loading data from the database, normalising
 coordinate data and keeping track of per‐record calibration
 adjustments.  It also provides an export facility for writing
 calibrated data sets back to new Excel files.
@@ -21,23 +21,20 @@ from dataclasses import dataclass
 from typing import Dict, Tuple, List
 
 import pandas as pd
+from .database.connection import get_engine
 
 class DataManager:
-    """Load and provide access to vehicle trajectory data.
+    """Load and provide access to vehicle trajectory data from database.
 
-    Parameters
-    ----------
-    data_dir: str
-        Directory where the four expected Excel files reside.  The
-        manager will look for ``map.xlsx``, ``bamboopattern.xlsx``,
-        ``centerpos2x.xlsx`` and ``largescreenpixelpos.xlsx`` in this
-        folder.  Missing files trigger a ``FileNotFoundError`` at
-        initialisation time.
+    The manager will connect to the database and load data from the 
+    ``map``, ``bamboopattern``, ``centerpos2x`` and ``largescreenpixelpos`` 
+    tables. Database connection issues trigger a ``RuntimeError`` at
+    initialisation time.
 
     Attributes
     ----------
     total_records: int
-        Number of rows in each of the input files.  All input files
+        Number of rows in each of the data tables.  All tables
         must contain the same number of rows; otherwise a
         ``ValueError`` is raised.
 
@@ -48,9 +45,10 @@ class DataManager:
         original ``vehicleleft`` and ``top`` values for record 123.
     """
 
-    def __init__(self, data_dir: str) -> None:
-        self.data_dir = data_dir
-        # DataFrames loaded from Excel
+    def __init__(self) -> None:
+        # Database engine
+        self.engine = get_engine()
+        # DataFrames loaded from database
         self.map_df: pd.DataFrame | None = None
         self.bamboopattern_df: pd.DataFrame | None = None
         self.centerpos2x_df: pd.DataFrame | None = None
@@ -70,34 +68,40 @@ class DataManager:
         self._compute_extents()
 
     def _load_data(self) -> None:
-        """Internal method to read the required Excel files.
+        """Internal method to read the required data from database tables.
 
         Raises
         ------
-        FileNotFoundError
-            If any of the required files cannot be located.
+        RuntimeError
+            If database connection fails or tables cannot be accessed.
 
         ValueError
-            If the input files contain differing numbers of rows.
+            If the database tables contain differing numbers of rows.
         """
-        required_files = {
-            'map': 'map.xlsx',
-            'bamboopattern': 'bamboopattern.xlsx',
-            'centerpos2x': 'centerpos2x.xlsx',
-            'largescreenpixelpos': 'largescreenpixelpos.xlsx',
+        required_tables = {
+            'map': 'map',
+            'bamboopattern': 'bamboopattern',
+            'centerpos2x': 'centerpos2x',
+            'largescreenpixelpos': 'largescreenpixelpos',
         }
         data_frames = {}
-        for key, filename in required_files.items():
-            path = os.path.join(self.data_dir, filename)
-            if not os.path.exists(path):
-                raise FileNotFoundError(f"Required file '{filename}' not found in {self.data_dir}")
-            try:
-                df = pd.read_excel(path)
-                data_frames[key] = df
-            except Exception as exc:
-                raise RuntimeError(f"Failed to load '{filename}': {exc}")
+        
+        try:
+            with self.engine.connect() as conn:
+                for key, table_name in required_tables.items():
+                    try:
+                        # Load data ordered by magId to ensure consistent ordering
+                        query = f"SELECT * FROM {table_name} ORDER BY magId"
+                        df = pd.read_sql(query, conn)
+                        if df.empty:
+                            raise RuntimeError(f"Table '{table_name}' is empty")
+                        data_frames[key] = df
+                    except Exception as exc:
+                        raise RuntimeError(f"Failed to load table '{table_name}': {exc}")
+        except Exception as exc:
+            raise RuntimeError(f"Database connection failed: {exc}")
 
-        # Ensure all files have the same number of rows
+        # Ensure all tables have the same number of rows
         lengths = {key: len(df) for key, df in data_frames.items()}
         if len(set(lengths.values())) != 1:
             raise ValueError(f"Input files have mismatched row counts: {lengths}")
