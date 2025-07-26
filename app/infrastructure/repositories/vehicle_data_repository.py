@@ -1,6 +1,6 @@
 """Vehicle data repository implementation."""
 
-from typing import Dict
+from typing import Dict, Any
 import pandas as pd
 from ...domain.entities.vehicle_record import VehicleRecord
 from ...domain.value_objects.coordinate import Coordinate
@@ -76,3 +76,12 @@ class VehicleDataRepository:
             records.append(record)
 
         return records
+
+    def get_full_record(self, view_type: ViewType, index: int) -> Dict[str, Any]:
+        """Get full record data for specific view and index."""
+        df = self._data_frames.get(view_type.value)
+        if df is None or index >= len(df):
+            return {}
+
+        row = df.iloc[index]
+        return row.to_dict()

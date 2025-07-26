@@ -9,6 +9,7 @@ from ..widgets.playback_controls import PlaybackControls
 from ..widgets.speed_control import SpeedControl
 from ..widgets.status_and_export import StatusDisplay, ExportButton
 from ..widgets.reload_button import ReloadButton
+from ..widgets.vehicle_info_panel import VehicleInfoPanel
 
 
 class UIBuilder:
@@ -20,13 +21,18 @@ class UIBuilder:
         self.data_service = data_service
         self.callbacks = callbacks
         self.canvases: Dict[str, ViewCanvas] = {}
+        self.info_panels: Dict[str, VehicleInfoPanel] = {}
 
     def build_interface(self) -> Dict[str, object]:
         """Build the complete interface and return components."""
         self._create_view_frame()
         control_widgets = self._create_control_panel()
 
-        return {"canvases": self.canvases, **control_widgets}
+        return {
+            "canvases": self.canvases,
+            "info_panels": self.info_panels,
+            **control_widgets
+        }
 
     def _create_view_frame(self) -> None:
         """Create the main view frame with canvases."""
@@ -51,6 +57,10 @@ class UIBuilder:
         canvas = ViewCanvas(frame, self.data_service, view_name, width=400, height=300)
         canvas.pack(fill=tk.BOTH, expand=True)
         self.canvases[view_name] = canvas
+
+        # Add info panel for this view
+        info_panel = VehicleInfoPanel(frame, view_name)
+        self.info_panels[view_name] = info_panel
 
     def _create_control_panel(self) -> Dict[str, object]:
         """Create the control panel with all widgets."""

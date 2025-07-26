@@ -19,8 +19,7 @@ class EmulatorController:
 
         self.playback_ctrl = controllers["playback_ctrl"]
         self.export_handler = controllers["export_handler"]
-        self.reload_handler = controllers["reload_handler"]
-        # Build UI and set up event handlers
+        self.reload_handler = controllers["reload_handler"]        # Build UI and set up event handlers
         self._build_ui()
         self._update_all_views(0)
 
@@ -30,13 +29,14 @@ class EmulatorController:
             "export": self.export_handler.export_data,
             "reload": self.reload_handler.reload_data,
         }
-
+        
         ui_builder = UIBuilder(
             self.initializer.root, self.initializer.data_service, callbacks
         )
         components = ui_builder.build_interface()
 
         self.canvases = components["canvases"]
+        self.info_panels = components["info_panels"]
 
         # Set up playback event handlers
         self.event_handlers = PlaybackEventHandlers(
@@ -76,9 +76,17 @@ class EmulatorController:
             self._schedule_next_tick()
 
     def _update_all_views(self, index: int) -> None:
-        """Update all canvas views."""
+        """Update all canvas views and info panels."""
         for canvas in self.canvases.values():
             canvas.update_marker(index)
+        
+        # Update info panels with current data
+        for view_name, panel in self.info_panels.items():
+            try:
+                data = self.initializer.data_service.get_full_record(view_name, index)
+                panel.update_data(data)
+            except Exception:
+                panel.update_data({})
 
     def _set_status(self, message: str) -> None:
         """Set status message."""

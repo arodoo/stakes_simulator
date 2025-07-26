@@ -4,6 +4,7 @@ from .playback_controls import PlaybackControls
 from .speed_control import SpeedControl
 from .status_and_export import StatusDisplay, ExportButton
 from .reload_button import ReloadButton
+from .vehicle_info_panel import VehicleInfoPanel
 
 __all__ = [
     "PlaybackControls",
@@ -11,4 +12,5 @@ __all__ = [
     "StatusDisplay",
     "ExportButton",
     "ReloadButton",
+    "VehicleInfoPanel",
 ]

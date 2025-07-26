@@ -1,6 +1,6 @@
 """Data manager service for the application layer."""
 
-from typing import Dict, Tuple
+from typing import Dict, Tuple, Any
 from ...domain.value_objects.view_type import ViewType
 from ...infrastructure.repositories.vehicle_data_repository import VehicleDataRepository
 from ...infrastructure.export.excel_export_service import ExcelExportService
@@ -56,3 +56,8 @@ class DataManagerService:
         """Reload all data from database."""
         self.repository.load_all_data()
         self.total_records = self.repository.get_total_records()
+
+    def get_full_record(self, view_name: str, index: int) -> Dict[str, Any]:
+        """Get full record data for a view and index."""
+        view_type = ViewType.from_string(view_name)
+        return self.repository.get_full_record(view_type, index)
