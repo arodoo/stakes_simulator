@@ -21,7 +21,7 @@ class SpeedControl:
         speed_label.pack(side=tk.LEFT, padx=(20, 2))
         
         self.speed_slider = ttk.Scale(
-            self.parent, from_=1, to=20, orient=tk.HORIZONTAL,
+            self.parent, from_=1, to=100, orient=tk.HORIZONTAL,
             variable=self.speed_var, command=self._on_speed_change
         )
         self.speed_slider.pack(side=tk.LEFT, padx=2)
