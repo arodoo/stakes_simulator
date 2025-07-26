@@ -2,4 +2,4 @@
 
 from .view_canvas import ViewCanvas
 
-__all__ = ['ViewCanvas']
+__all__ = ["ViewCanvas"]

@@ -7,17 +7,20 @@ from .playback_controller import PlaybackController
 
 class ReloadHandler:
     """Handles data reload operations."""
-    
-    def __init__(self, data_service: DataManagerService, 
-                 playback_ctrl: PlaybackController,
-                 status_callback: Callable[[str], None],
-                 update_callback: Callable[[int], None]):
+
+    def __init__(
+        self,
+        data_service: DataManagerService,
+        playback_ctrl: PlaybackController,
+        status_callback: Callable[[str], None],
+        update_callback: Callable[[int], None],
+    ):
         """Initialize reload handler."""
         self.data_service = data_service
         self.playback_ctrl = playback_ctrl
         self.status_callback = status_callback
         self.update_callback = update_callback
-    
+
     def reload_data(self) -> None:
         """Reload data from database and update views."""
         try:

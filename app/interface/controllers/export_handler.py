@@ -7,12 +7,12 @@ from typing import Dict, Callable
 
 class ExportHandler:
     """Handles data export operations."""
-    
+
     def __init__(self, data_service, status_callback: Callable[[str], None]):
         """Initialize export handler."""
         self.data_service = data_service
         self.status_callback = status_callback
-    
+
     def export_data(self) -> None:
         """Prompt user for output directory and export calibrated data."""
         output_dir = filedialog.askdirectory(
@@ -20,7 +20,7 @@ class ExportHandler:
         )
         if not output_dir:
             return
-        
+
         try:
             written = self.data_service.export_calibrated(output_dir)
             self._show_export_results(written)
@@ -29,7 +29,7 @@ class ExportHandler:
             error_msg = f"ERROR: Failed to export calibrated data: {exc}"
             print(error_msg)
             self.status_callback("Export failed")
-    
+
     def _show_export_results(self, written: Dict[str, str]) -> None:
         """Show export results."""
         msg_lines = ["Calibrated files written:"]

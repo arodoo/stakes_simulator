@@ -8,11 +8,11 @@ The vehicle_emulator package provides a clean separation of concerns:
 - Infrastructure layer: Database access, file I/O, external services
 - Interface layer: User interface components and controllers
 
-The application loads Excel-based map files, visualizes trajectories 
+The application loads Excel-based map files, visualizes trajectories
 on multiple canvases, and allows interactive calibration of individual points.
 """
 
 from .app import EmulatorController
 
 __version__ = "2.0.0"
-__all__ = ['EmulatorController']
+__all__ = ["EmulatorController"]

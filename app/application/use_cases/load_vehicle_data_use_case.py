@@ -5,17 +5,17 @@ from ...infrastructure.repositories.vehicle_data_repository import VehicleDataRe
 
 class LoadVehicleDataUseCase:
     """Use case for loading vehicle data from database."""
-    
+
     def __init__(self, repository: VehicleDataRepository):
         """Initialize with repository dependency."""
         self.repository = repository
-    
+
     def execute(self) -> int:
         """Execute the use case to load all vehicle data.
-        
+
         Returns:
             int: Total number of records loaded
-            
+
         Raises:
             RuntimeError: If database connection fails
             ValueError: If data tables have mismatched row counts

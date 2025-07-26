@@ -20,7 +20,9 @@ class CanvasCoordinateHelper:
     ni a ninguna capa de dominio; solamente a la proyección sobre la interfaz.
     """
 
-    def __init__(self, data_service, view_name: str, width: int, height: int, padding: int = 10):
+    def __init__(
+        self, data_service, view_name: str, width: int, height: int, padding: int = 10
+    ):
         """Pre‑calcula la transformación para la vista solicitada.
 
         Args:
@@ -36,22 +38,25 @@ class CanvasCoordinateHelper:
         self.height = height
 
         # Extremos de los datos (min/max) recuperados del servicio existente
-        self.min_x, self.min_y, self.max_x, self.max_y = data_service.get_extents(view_name)
+        self.min_x, self.min_y, self.max_x, self.max_y = data_service.get_extents(
+            view_name
+        )
 
         # Rango en cada eje (evitamos división por 0)
         range_x = self.max_x - self.min_x or 1e-9
         range_y = self.max_y - self.min_y or 1e-9
 
         # --- Escala uniforme: mismo factor en X e Y ---
-        self.scale = min((width - 2 * padding) / range_x,
-                         (height - 2 * padding) / range_y)
+        self.scale = min(
+            (width - 2 * padding) / range_x, (height - 2 * padding) / range_y
+        )
 
         # Offsets para centrar
-        self.offset_x = (width  - range_x * self.scale) / 2
+        self.offset_x = (width - range_x * self.scale) / 2
         self.offset_y = (height - range_y * self.scale) / 2
 
         # ¿Debemos invertir Y?  Solo cuando los datos están en sistema cartesiano.
-        self.flip_y = (view_name != ViewType.BAMBOO_PATTERN.value)
+        self.flip_y = view_name != ViewType.BAMBOO_PATTERN.value
 
     # --------------------------------------------------------------------- #
     #                    Conversión dominio ↔ canvas                        #
@@ -64,15 +69,15 @@ class CanvasCoordinateHelper:
         if self.flip_y:
             cy = self.height - ((y - self.min_y) * self.scale + self.offset_y)
         else:
-            cy =            ((y - self.min_y) * self.scale + self.offset_y)
+            cy = (y - self.min_y) * self.scale + self.offset_y
         return cx, cy
 
     def from_canvas(self, cx: float, cy: float) -> Tuple[float, float]:
         """Convierte coordenadas de canvas a coordenadas de datos."""
         if self.flip_y:
-            y_comp = (self.height - cy - self.offset_y)
+            y_comp = self.height - cy - self.offset_y
         else:
-            y_comp = (cy - self.offset_y)
+            y_comp = cy - self.offset_y
 
         x = (cx - self.offset_x) / self.scale + self.min_x
         y = y_comp / self.scale + self.min_y

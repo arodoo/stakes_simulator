@@ -2,4 +2,4 @@
 
 from .controllers import EmulatorController
 
-__all__ = ['EmulatorController']
+__all__ = ["EmulatorController"]

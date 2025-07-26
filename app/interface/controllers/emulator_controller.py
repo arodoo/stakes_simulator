@@ -11,57 +11,54 @@ class EmulatorController:
     """Main application controller coordinating all components."""
 
     def __init__(self, root: tk.Tk) -> None:
-        """Initialize the emulator controller."""        # Initialize app components
+        """Initialize the emulator controller."""  # Initialize app components
         self.initializer = AppInitializer(root)
         controllers = self.initializer.create_controllers(
-            self._update_all_views,
-            self._set_status
+            self._update_all_views, self._set_status
         )
-        
-        self.playback_ctrl = controllers['playback_ctrl']
-        self.export_handler = controllers['export_handler']
-        self.reload_handler = controllers['reload_handler']
-          # Build UI and set up event handlers
+
+        self.playback_ctrl = controllers["playback_ctrl"]
+        self.export_handler = controllers["export_handler"]
+        self.reload_handler = controllers["reload_handler"]
+        # Build UI and set up event handlers
         self._build_ui()
         self._update_all_views(0)
 
     def _build_ui(self) -> None:
         """Build the user interface."""
         callbacks = {
-            'export': self.export_handler.export_data,
-            'reload': self.reload_handler.reload_data
+            "export": self.export_handler.export_data,
+            "reload": self.reload_handler.reload_data,
         }
-        
+
         ui_builder = UIBuilder(
-            self.initializer.root, 
-            self.initializer.data_service, 
-            callbacks
+            self.initializer.root, self.initializer.data_service, callbacks
         )
         components = ui_builder.build_interface()
-        
-        self.canvases = components['canvases']
-        
+
+        self.canvases = components["canvases"]
+
         # Set up playback event handlers
         self.event_handlers = PlaybackEventHandlers(
-            self.playback_ctrl, 
-            components, 
-            self._schedule_next_tick
+            self.playback_ctrl, components, self._schedule_next_tick
         )
-        
+
         # Wire up the playback controls
         self._wire_playback_controls(components)
 
     def _wire_playback_controls(self, components: dict) -> None:
         """Wire up playback control callbacks."""
-        controls = components['playback_controls']
-        controls.set_callbacks({
-            'toggle_play': self.event_handlers.toggle_play,
-            'step_back': self.event_handlers.step_back,
-            'step_forward': self.event_handlers.step_forward,
-            'reset': self.event_handlers.reset
-        })
-        
-        speed_control = components['speed_control']
+        controls = components["playback_controls"]
+        controls.set_callbacks(
+            {
+                "toggle_play": self.event_handlers.toggle_play,
+                "step_back": self.event_handlers.step_back,
+                "step_forward": self.event_handlers.step_forward,
+                "reset": self.event_handlers.reset,
+            }
+        )
+
+        speed_control = components["speed_control"]
         speed_control.set_callback(self.event_handlers.on_speed_change)
 
     def _schedule_next_tick(self) -> None:
