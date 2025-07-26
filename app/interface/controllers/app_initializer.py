@@ -6,6 +6,7 @@ from typing import Dict, Callable
 from ...application.services.data_manager_service import DataManagerService
 from .playback_controller import PlaybackController
 from .export_handler import ExportHandler
+from .reload_handler import ReloadHandler
 
 
 class AppInitializer:
@@ -37,8 +38,16 @@ class AppInitializer:
             status_callback
         )
         
+        reload_handler = ReloadHandler(
+            self.data_service,
+            playback_ctrl,
+            status_callback,
+            update_callback
+        )
+        
         return {
             'playback_ctrl': playback_ctrl,
             'export_handler': export_handler,
+            'reload_handler': reload_handler,
             'data_service': self.data_service
         }

@@ -51,3 +51,8 @@ class DataManagerService:
             )
             written_files[view_type.value] = file_path
         return written_files
+
+    def reload_data(self) -> None:
+        """Reload all data from database."""
+        self.repository.load_all_data()
+        self.total_records = self.repository.get_total_records()

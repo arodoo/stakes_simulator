@@ -8,6 +8,7 @@ from ..views.view_canvas import ViewCanvas
 from ..widgets.playback_controls import PlaybackControls
 from ..widgets.speed_control import SpeedControl
 from ..widgets.status_and_export import StatusDisplay, ExportButton
+from ..widgets.reload_button import ReloadButton
 
 
 class UIBuilder:
@@ -56,17 +57,18 @@ class UIBuilder:
         """Create the control panel with all widgets."""
         control_frame = ttk.Frame(self.root)
         control_frame.pack(side=tk.BOTTOM, fill=tk.X, padx=5, pady=5)
-        
-        # Create empty callbacks for playback controls initially
+          # Create empty callbacks for playback controls initially
         playback_callbacks = {}
         playback_controls = PlaybackControls(control_frame, playback_callbacks)
         speed_control = SpeedControl(control_frame, None)
         export_button = ExportButton(control_frame, self.callbacks.get('export'))
+        reload_button = ReloadButton(control_frame, self.callbacks.get('reload'))
         status_display = StatusDisplay(control_frame)
         
         return {
             'playback_controls': playback_controls,
             'speed_control': speed_control,
             'export_button': export_button,
+            'reload_button': reload_button,
             'status_display': status_display
         }

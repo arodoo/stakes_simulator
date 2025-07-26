@@ -59,3 +59,10 @@ class PlaybackController:
     def set_speed(self, speed: int) -> None:
         """Set playback speed."""
         self.speed_step = speed
+
+    def update_total_records(self, total_records: int) -> None:
+        """Update total records count after data reload."""
+        self.total_records = total_records
+        if self.current_index >= total_records:
+            self.current_index = 0
+            self.update_callback(self.current_index)

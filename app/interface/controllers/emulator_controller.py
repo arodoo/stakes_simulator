@@ -11,8 +11,7 @@ class EmulatorController:
     """Main application controller coordinating all components."""
 
     def __init__(self, root: tk.Tk) -> None:
-        """Initialize the emulator controller."""
-        # Initialize app components
+        """Initialize the emulator controller."""        # Initialize app components
         self.initializer = AppInitializer(root)
         controllers = self.initializer.create_controllers(
             self._update_all_views,
@@ -21,15 +20,16 @@ class EmulatorController:
         
         self.playback_ctrl = controllers['playback_ctrl']
         self.export_handler = controllers['export_handler']
-        
-        # Build UI and set up event handlers
+        self.reload_handler = controllers['reload_handler']
+          # Build UI and set up event handlers
         self._build_ui()
         self._update_all_views(0)
 
     def _build_ui(self) -> None:
         """Build the user interface."""
         callbacks = {
-            'export': self.export_handler.export_data
+            'export': self.export_handler.export_data,
+            'reload': self.reload_handler.reload_data
         }
         
         ui_builder = UIBuilder(
