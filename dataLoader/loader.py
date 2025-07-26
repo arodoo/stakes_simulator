@@ -1,9 +1,9 @@
 import pandas as pd
-from sqlalchemy import create_engine, text
+from sqlalchemy import text
+from ..database import get_engine
 
-# 1. Conexión ──> sustituye user:pass@host/db
-engine = create_engine("mysql+mysqlconnector://root:root@localhost/stakes?charset=utf8mb4",
-                       pool_pre_ping=True)
+# 1. Conexión usando el módulo centralizado de base de datos
+engine = get_engine()
 
 # 2. Lectura de archivos
 map_df      = pd.read_excel("../share/map.xlsx")
