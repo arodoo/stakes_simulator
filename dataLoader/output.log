@@ -1,0 +1,158 @@
+Database module imported successfully
+BASE_DIR: C:\Users\Public\Escritorio\vehicle_emulator\vehicle_emulator
+SHARE_DIR: C:\Users\Public\Escritorio\vehicle_emulator\vehicle_emulator\share
+Database engine created successfully
+Loading Excel files...
+Excel files loaded successfully
+Cleaning and converting data types...
+Starting database transaction...
+Inserting map data...
+Error during execution: (mysql.connector.errors.DatabaseError) 3780 (HY000): Referencing column 'magId' and referenced column 'magId' in foreign key constraint 'fk_bamboo_mag' are incompatible.
+[SQL: 
+CREATE TABLE map (
+	segment BIGINT, 
+	`magId` BIGINT, 
+	`lineDirectionTypeId` BIGINT, 
+	stake TEXT, 
+	type FLOAT(53), 
+	epc TEXT, 
+	tid FLOAT(53), 
+	polar BIGINT, 
+	`hidenEnable` BIGINT, 
+	transverse FLOAT(53), 
+	longitudinal FLOAT(53), 
+	curvature FLOAT(53), 
+	`coordinateX` FLOAT(53), 
+	`coordinateY` FLOAT(53), 
+	`coordinateE` BIGINT, 
+	`coordinateN` BIGINT, 
+	`cruisingSpeed` BIGINT, 
+	`limitSpeed` BIGINT, 
+	scene BIGINT, 
+	`stationType` FLOAT(53), 
+	`stationNum` BIGINT, 
+	signallamp BIGINT, 
+	`oneWayRoad` BIGINT, 
+	`meetingVec` BIGINT, 
+	`oppositeSegment` BIGINT
+)
+
+]
+(Background on this error at: https://sqlalche.me/e/20/4xp6)
+Traceback (most recent call last):
+  File "C:\Users\haroe\AppData\Local\Programs\Python\Python311\Lib\site-packages\mysql\connector\connection_cext.py", line 772, in cmd_query
+    self._cmysql.query(
+_mysql_connector.MySQLInterfaceError: Referencing column 'magId' and referenced column 'magId' in foreign key constraint 'fk_bamboo_mag' are incompatible.
+
+The above exception was the direct cause of the following exception:
+
+Traceback (most recent call last):
+  File "C:\Users\haroe\AppData\Local\Programs\Python\Python311\Lib\site-packages\sqlalchemy\engine\base.py", line 1963, in _exec_single_context
+    self.dialect.do_execute(
+  File "C:\Users\haroe\AppData\Local\Programs\Python\Python311\Lib\site-packages\sqlalchemy\engine\default.py", line 943, in do_execute
+    cursor.execute(statement, parameters)
+  File "C:\Users\haroe\AppData\Local\Programs\Python\Python311\Lib\site-packages\mysql\connector\cursor_cext.py", line 353, in execute
+    self._connection.cmd_query(
+  File "C:\Users\haroe\AppData\Local\Programs\Python\Python311\Lib\site-packages\mysql\connector\opentelemetry\context_propagation.py", line 97, in wrapper
+    return method(cnx, *args, **kwargs)
+           ^^^^^^^^^^^^^^^^^^^^^^^^^^^^
+  File "C:\Users\haroe\AppData\Local\Programs\Python\Python311\Lib\site-packages\mysql\connector\connection_cext.py", line 781, in cmd_query
+    raise get_mysql_exception(
+mysql.connector.errors.DatabaseError: 3780 (HY000): Referencing column 'magId' and referenced column 'magId' in foreign key constraint 'fk_bamboo_mag' are incompatible.
+
+The above exception was the direct cause of the following exception:
+
+Traceback (most recent call last):
+  File "C:\Users\Public\Escritorio\vehicle_emulator\vehicle_emulator\dataLoader\loader.py", line 60, in <module>
+    map_df.to_sql("map", conn, if_exists="replace", index=False, chunksize=1000)
+  File "C:\Users\haroe\AppData\Local\Programs\Python\Python311\Lib\site-packages\pandas\util\_decorators.py", line 333, in wrapper
+    return func(*args, **kwargs)
+           ^^^^^^^^^^^^^^^^^^^^^
+  File "C:\Users\haroe\AppData\Local\Programs\Python\Python311\Lib\site-packages\pandas\core\generic.py", line 3106, in to_sql
+    return sql.to_sql(
+           ^^^^^^^^^^^
+  File "C:\Users\haroe\AppData\Local\Programs\Python\Python311\Lib\site-packages\pandas\io\sql.py", line 844, in to_sql
+    return pandas_sql.to_sql(
+           ^^^^^^^^^^^^^^^^^^
+  File "C:\Users\haroe\AppData\Local\Programs\Python\Python311\Lib\site-packages\pandas\io\sql.py", line 2020, in to_sql
+    table = self.prep_table(
+            ^^^^^^^^^^^^^^^^
+  File "C:\Users\haroe\AppData\Local\Programs\Python\Python311\Lib\site-packages\pandas\io\sql.py", line 1924, in prep_table
+    table.create()
+  File "C:\Users\haroe\AppData\Local\Programs\Python\Python311\Lib\site-packages\pandas\io\sql.py", line 997, in create
+    self._execute_create()
+  File "C:\Users\haroe\AppData\Local\Programs\Python\Python311\Lib\site-packages\pandas\io\sql.py", line 983, in _execute_create
+    self.table.create(bind=self.pd_sql.con)
+  File "C:\Users\haroe\AppData\Local\Programs\Python\Python311\Lib\site-packages\sqlalchemy\sql\schema.py", line 1288, in create
+    bind._run_ddl_visitor(ddl.SchemaGenerator, self, checkfirst=checkfirst)
+  File "C:\Users\haroe\AppData\Local\Programs\Python\Python311\Lib\site-packages\sqlalchemy\engine\base.py", line 2455, in _run_ddl_visitor
+    ).traverse_single(element)
+      ^^^^^^^^^^^^^^^^^^^^^^^^
+  File "C:\Users\haroe\AppData\Local\Programs\Python\Python311\Lib\site-packages\sqlalchemy\sql\visitors.py", line 664, in traverse_single
+    return meth(obj, **kw)
+           ^^^^^^^^^^^^^^^
+  File "C:\Users\haroe\AppData\Local\Programs\Python\Python311\Lib\site-packages\sqlalchemy\sql\ddl.py", line 1020, in visit_table
+    )._invoke_with(self.connection)
+      ^^^^^^^^^^^^^^^^^^^^^^^^^^^^^
+  File "C:\Users\haroe\AppData\Local\Programs\Python\Python311\Lib\site-packages\sqlalchemy\sql\ddl.py", line 321, in _invoke_with
+    return bind.execute(self)
+           ^^^^^^^^^^^^^^^^^^
+  File "C:\Users\haroe\AppData\Local\Programs\Python\Python311\Lib\site-packages\sqlalchemy\engine\base.py", line 1415, in execute
+    return meth(
+           ^^^^^
+  File "C:\Users\haroe\AppData\Local\Programs\Python\Python311\Lib\site-packages\sqlalchemy\sql\ddl.py", line 187, in _execute_on_connection
+    return connection._execute_ddl(
+           ^^^^^^^^^^^^^^^^^^^^^^^^
+  File "C:\Users\haroe\AppData\Local\Programs\Python\Python311\Lib\site-packages\sqlalchemy\engine\base.py", line 1526, in _execute_ddl
+    ret = self._execute_context(
+          ^^^^^^^^^^^^^^^^^^^^^^
+  File "C:\Users\haroe\AppData\Local\Programs\Python\Python311\Lib\site-packages\sqlalchemy\engine\base.py", line 1842, in _execute_context
+    return self._exec_single_context(
+           ^^^^^^^^^^^^^^^^^^^^^^^^^^
+  File "C:\Users\haroe\AppData\Local\Programs\Python\Python311\Lib\site-packages\sqlalchemy\engine\base.py", line 1982, in _exec_single_context
+    self._handle_dbapi_exception(
+  File "C:\Users\haroe\AppData\Local\Programs\Python\Python311\Lib\site-packages\sqlalchemy\engine\base.py", line 2351, in _handle_dbapi_exception
+    raise sqlalchemy_exception.with_traceback(exc_info[2]) from e
+  File "C:\Users\haroe\AppData\Local\Programs\Python\Python311\Lib\site-packages\sqlalchemy\engine\base.py", line 1963, in _exec_single_context
+    self.dialect.do_execute(
+  File "C:\Users\haroe\AppData\Local\Programs\Python\Python311\Lib\site-packages\sqlalchemy\engine\default.py", line 943, in do_execute
+    cursor.execute(statement, parameters)
+  File "C:\Users\haroe\AppData\Local\Programs\Python\Python311\Lib\site-packages\mysql\connector\cursor_cext.py", line 353, in execute
+    self._connection.cmd_query(
+  File "C:\Users\haroe\AppData\Local\Programs\Python\Python311\Lib\site-packages\mysql\connector\opentelemetry\context_propagation.py", line 97, in wrapper
+    return method(cnx, *args, **kwargs)
+           ^^^^^^^^^^^^^^^^^^^^^^^^^^^^
+  File "C:\Users\haroe\AppData\Local\Programs\Python\Python311\Lib\site-packages\mysql\connector\connection_cext.py", line 781, in cmd_query
+    raise get_mysql_exception(
+sqlalchemy.exc.DatabaseError: (mysql.connector.errors.DatabaseError) 3780 (HY000): Referencing column 'magId' and referenced column 'magId' in foreign key constraint 'fk_bamboo_mag' are incompatible.
+[SQL: 
+CREATE TABLE map (
+	segment BIGINT, 
+	`magId` BIGINT, 
+	`lineDirectionTypeId` BIGINT, 
+	stake TEXT, 
+	type FLOAT(53), 
+	epc TEXT, 
+	tid FLOAT(53), 
+	polar BIGINT, 
+	`hidenEnable` BIGINT, 
+	transverse FLOAT(53), 
+	longitudinal FLOAT(53), 
+	curvature FLOAT(53), 
+	`coordinateX` FLOAT(53), 
+	`coordinateY` FLOAT(53), 
+	`coordinateE` BIGINT, 
+	`coordinateN` BIGINT, 
+	`cruisingSpeed` BIGINT, 
+	`limitSpeed` BIGINT, 
+	scene BIGINT, 
+	`stationType` FLOAT(53), 
+	`stationNum` BIGINT, 
+	signallamp BIGINT, 
+	`oneWayRoad` BIGINT, 
+	`meetingVec` BIGINT, 
+	`oppositeSegment` BIGINT
+)
+
+]
+(Background on this error at: https://sqlalche.me/e/20/4xp6)

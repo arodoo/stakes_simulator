@@ -1,29 +1,62 @@
-import pandas as pd
-from sqlalchemy import text
-from ..database.connection import get_engine
+import os
+import sys
 
-# 1. Conexión usando el módulo centralizado de base de datos
-engine = get_engine()
+# Add parent directory to Python path for imports
+sys.path.append(os.path.dirname(os.path.dirname(os.path.abspath(__file__))))
 
-# 2. Lectura de archivos
-map_df = pd.read_excel("../share/map.xlsx")
-center_df = pd.read_excel("../share/centerpos2x.xlsx")
-bamboo_df = pd.read_excel("../share/bamboopattern.xlsx")
-large_df = pd.read_excel("../share/largescreenpixelpos.xlsx")
-
-# 3. Carga dentro de una sola transacción
-with engine.begin() as conn:  # ¡ATÓMICO!
-    conn.execute(text("SET foreign_key_checks = 0;"))
-    map_df.to_sql("map", conn, if_exists="append", index=False, chunksize=5000)
-    center_df.to_sql(
-        "centerpos2x", conn, if_exists="append", index=False, chunksize=5000
+try:
+    from database.connection import get_engine
+    from services import (
+        DatabaseSchemaService, 
+        DataCleaningService,
+        DataInsertionService,
+        ExcelLoaderService
     )
-    bamboo_df.to_sql(
-        "bamboopattern", conn, if_exists="append", index=False, chunksize=5000
-    )
-    large_df.to_sql(
-        "largescreenpixelpos", conn, if_exists="append", index=False, chunksize=5000
-    )
-    conn.execute(text("SET foreign_key_checks = 1;"))
+    print("All modules imported successfully")
+except ImportError as e:
+    print(f"Import error: {e}")
+    sys.exit(1)
 
-print("Carga completada sin pérdidas.")
+# Configuration
+BASE_DIR = os.path.abspath(os.path.join(os.path.dirname(__file__), '..'))
+SHARE_DIR = os.path.join(BASE_DIR, 'share')
+TABLE_NAMES = ['map', 'centerpos2x', 'bamboopattern', 'largescreenpixelpos']
+
+try:
+    # Initialize services
+    engine = get_engine()
+    schema_service = DatabaseSchemaService(engine)
+    cleaning_service = DataCleaningService()
+    insertion_service = DataInsertionService(engine)
+    excel_service = ExcelLoaderService(SHARE_DIR)
+    
+    print("Starting data loading process...")
+    
+    # Step 1: Drop existing tables
+    print("Dropping existing tables...")
+    schema_service.drop_tables_if_exist(TABLE_NAMES)
+    
+    # Step 2: Create fresh tables
+    print("Creating tables...")
+    schema_service.create_tables()
+    
+    # Step 3: Load Excel data
+    dataframes = excel_service.load_all_files()
+    
+    # Step 4: Clean data
+    print("Cleaning data...")
+    dataframes['map'] = cleaning_service.clean_map_data(dataframes['map'])
+    dataframes['centerpos2x'] = cleaning_service.clean_centerpos2x_data(dataframes['centerpos2x'])
+    dataframes['bamboopattern'] = cleaning_service.clean_bamboopattern_data(dataframes['bamboopattern'])
+    dataframes['largescreenpixelpos'] = cleaning_service.clean_largescreenpixelpos_data(dataframes['largescreenpixelpos'])
+    
+    # Step 5: Insert data
+    print("Inserting data...")
+    insertion_service.insert_all_data(dataframes)
+    
+    print("Carga completada sin pérdidas.")
+    
+except Exception as e:
+    print(f"Error during execution: {e}")
+    import traceback
+    traceback.print_exc()
