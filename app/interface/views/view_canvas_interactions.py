@@ -24,9 +24,7 @@
         old_cy = (y1 + y2) / 2.0
         dx = cx - old_cx
         dy = cy - old_cy
-        self.move(self.marker_id, dx, dy)
-
-    def _scale_to_canvas(self, x: float, y: float) -> tuple[float, float]:
+        self.move(self.marker_id, dx, dy)    def _scale_to_canvas(self, x: float, y: float) -> tuple[float, float]:
         """Scale world coordinates to canvas coordinates."""
         min_x, min_y, max_x, max_y = self.data_service.get_extents(self.view_name)
         cx = (x - min_x) / (max_x - min_x) * self.width

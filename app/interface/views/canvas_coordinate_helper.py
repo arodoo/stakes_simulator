@@ -8,6 +8,20 @@ class CanvasCoordinateHelper:
     """Helper for coordinate transformations on a Tkinter canvas.
 
     * Mantiene la lógica de transformación que ya utiliza el resto de la aplicación
+      (coordenadas de dominio -> canvas y viceversa) pero:
+
+        1. Usa **la misma escala en X e Y** -> evita la distorsión.
+        2. Centra el dibujo con un padding configurable.
+        3. Invierte el eje Y solo para BAMBOO_PATTERN que usa origen de imagen
+           (0,0 en la esquina superior-izquierda). Para CENTER_POS_2X y 
+           LARGE_SCREEN_PIXEL_POS se conserva el sistema cartesiano normal.
+
+    Estos ajustes no afectan a los repositorios, ni al ``DataService``,
+    ni a ninguna capa de dominio; solamente a la proyección sobre la interfaz.
+    """
+    """Helper for coordinate transformations on a Tkinter canvas.
+
+    * Mantiene la lógica de transformación que ya utiliza el resto de la aplicación
       (coordenadas de dominio → canvas y viceversa) pero:
 
         1. Usa **la misma escala en X e Y** → evita la distorsión.
@@ -23,7 +37,7 @@ class CanvasCoordinateHelper:
     def __init__(
         self, data_service, view_name: str, width: int, height: int, padding: int = 10
     ):
-        """Pre‑calcula la transformación para la vista solicitada.
+        """Pre-calcula la transformación para la vista solicitada.
 
         Args:
             data_service: Servicio con ``get_extents(view_name)`` y lectura de datos.
@@ -55,11 +69,11 @@ class CanvasCoordinateHelper:
         self.offset_x = (width - range_x * self.scale) / 2
         self.offset_y = (height - range_y * self.scale) / 2
 
-        # ¿Debemos invertir Y?  Solo cuando los datos están en sistema cartesiano.
-        self.flip_y = view_name != ViewType.BAMBOO_PATTERN.value
+        # ¿Debemos invertir Y? Solo para BAMBOO_PATTERN que usa coordenadas de imagen.
+        self.flip_y = view_name == ViewType.BAMBOO_PATTERN.value
 
     # --------------------------------------------------------------------- #
-    #                    Conversión dominio ↔ canvas                        #
+    #                    Conversión dominio <-> canvas                      #
     # --------------------------------------------------------------------- #
 
     def to_canvas(self, x: float, y: float) -> Tuple[float, float]:
