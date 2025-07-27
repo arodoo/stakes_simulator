@@ -10,6 +10,7 @@ from ..widgets.speed_control import SpeedControl
 from ..widgets.status_and_export import StatusDisplay, ExportButton
 from ..widgets.reload_button import ReloadButton
 from ..widgets.vehicle_info_panel import VehicleInfoPanel
+from ..widgets.map_correlation_panel import MapCorrelationPanel
 
 
 class UIBuilder:
@@ -22,17 +23,24 @@ class UIBuilder:
         self.callbacks = callbacks
         self.canvases: Dict[str, ViewCanvas] = {}
         self.info_panels: Dict[str, VehicleInfoPanel] = {}
+        self.correlation_panel: MapCorrelationPanel = None
 
     def build_interface(self) -> Dict[str, object]:
         """Build the complete interface and return components."""
+        self._create_correlation_panel()
         self._create_view_frame()
         control_widgets = self._create_control_panel()
 
         return {
             "canvases": self.canvases,
             "info_panels": self.info_panels,
+            "correlation_panel": self.correlation_panel,
             **control_widgets
         }
+
+    def _create_correlation_panel(self) -> None:
+        """Create the correlation panel."""
+        self.correlation_panel = MapCorrelationPanel(self.root)
 
     def _create_view_frame(self) -> None:
         """Create the main view frame with canvases."""

@@ -85,3 +85,12 @@ class VehicleDataRepository:
 
         row = df.iloc[index]
         return row.to_dict()
+
+    def get_master_record(self, index: int) -> Dict[str, Any]:
+        """Get master table (map) record for index."""
+        df = self._data_frames.get("map")
+        if df is None or index >= len(df):
+            return {}
+
+        row = df.iloc[index]
+        return row.to_dict()

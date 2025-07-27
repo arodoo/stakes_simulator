@@ -61,3 +61,14 @@ class DataManagerService:
         """Get full record data for a view and index."""
         view_type = ViewType.from_string(view_name)
         return self.repository.get_full_record(view_type, index)
+
+    def get_master_record(self, index: int) -> Dict[str, Any]:
+        """Get master table (map) record for index."""
+        return self.repository.get_master_record(index)
+
+    def get_correlation_data(self, index: int) -> Dict[str, Dict[str, Any]]:
+        """Get correlation data for all views at index."""
+        correlation = {}
+        for view_type in ViewType:
+            correlation[view_type.value] = self.get_full_record(view_type.value, index)
+        return correlation
