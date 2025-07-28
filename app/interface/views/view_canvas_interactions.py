@@ -29,11 +29,21 @@
         min_x, min_y, max_x, max_y = self.data_service.get_extents(self.view_name)
         cx = (x - min_x) / (max_x - min_x) * self.width
         cy = (y - min_y) / (max_y - min_y) * self.height
+        
+        # Flip Y axis for BambooPattern so UW* is at bottom and DE* is at top
+        if self.view_name == "bamboopattern":
+            cy = self.height - cy
+            
         return cx, cy
 
     def _scale_from_canvas(self, cx: float, cy: float) -> tuple[float, float]:
         """Scale canvas coordinates to world coordinates."""
         min_x, min_y, max_x, max_y = self.data_service.get_extents(self.view_name)
+        
+        # Flip Y axis for BambooPattern 
+        if self.view_name == "bamboopattern":
+            cy = self.height - cy
+            
         x = min_x + (cx / self.width) * (max_x - min_x)
         y = min_y + (cy / self.height) * (max_y - min_y)
         return x, y

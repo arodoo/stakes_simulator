@@ -69,8 +69,9 @@ class CanvasCoordinateHelper:
         self.offset_x = (width - range_x * self.scale) / 2
         self.offset_y = (height - range_y * self.scale) / 2
 
-        # No invertimos Y para ninguna vista ya que los datos están en orden correcto.
-        self.flip_y = False
+        # Invertir Y solo para BambooPattern para que UW* esté abajo y DE* arriba
+        view_type = ViewType.from_string(view_name)
+        self.flip_y = (view_type == ViewType.BAMBOO_PATTERN)
 
     # --------------------------------------------------------------------- #
     #                    Conversión dominio <-> canvas                      #
