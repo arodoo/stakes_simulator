@@ -10,7 +10,8 @@ try:
         DatabaseSchemaService, 
         DataCleaningService,
         DataInsertionService,
-        ExcelLoaderService
+        ExcelLoaderService,
+        SqlExportService
     )
     print("All modules imported successfully")
 except ImportError as e:
@@ -20,6 +21,7 @@ except ImportError as e:
 # Configuration
 BASE_DIR = os.path.abspath(os.path.join(os.path.dirname(__file__), '..'))
 SHARE_DIR = os.path.join(BASE_DIR, 'share')
+SQL_DIR = os.path.join(SHARE_DIR, 'SQL')
 TABLE_NAMES = ['map', 'centerpos2x', 'bamboopattern', 'largescreenpixelpos']
 
 try:
@@ -29,6 +31,7 @@ try:
     cleaning_service = DataCleaningService()
     insertion_service = DataInsertionService(engine)
     excel_service = ExcelLoaderService(SHARE_DIR)
+    sql_export_service = SqlExportService(SQL_DIR)
     
     print("Starting data loading process...")
     
@@ -54,7 +57,12 @@ try:
     print("Inserting data...")
     insertion_service.insert_all_data(dataframes)
     
+    # Step 6: Export SQL files with versioning
+    print("Generating SQL export files...")
+    version_dir = sql_export_service.export_all_data_as_sql(dataframes)
+    
     print("Carga completada sin pérdidas.")
+    print(f"Archivos SQL exportados en: {version_dir}")
     
 except Exception as e:
     print(f"Error during execution: {e}")
