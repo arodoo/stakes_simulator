@@ -1,4 +1,6 @@
-"""Canvas coordinate utilities."""
+"""Canvas coordinate uti        1. Usa **la misma escala en X e Y** → evita la distorsión.
+        2. Centra el dibujo con un padding configurable.
+        3. No invierte el eje Y ya que los datos están en orden correcto.s."""
 
 from typing import Tuple
 from ...domain.value_objects.view_type import ViewType
@@ -12,9 +14,7 @@ class CanvasCoordinateHelper:
 
         1. Usa **la misma escala en X e Y** -> evita la distorsión.
         2. Centra el dibujo con un padding configurable.
-        3. Invierte el eje Y solo para BAMBOO_PATTERN que usa origen de imagen
-           (0,0 en la esquina superior-izquierda). Para CENTER_POS_2X y 
-           LARGE_SCREEN_PIXEL_POS se conserva el sistema cartesiano normal.
+        3. No invierte el eje Y ya que los datos están en orden correcto.
 
     Estos ajustes no afectan a los repositorios, ni al ``DataService``,
     ni a ninguna capa de dominio; solamente a la proyección sobre la interfaz.
@@ -69,8 +69,8 @@ class CanvasCoordinateHelper:
         self.offset_x = (width - range_x * self.scale) / 2
         self.offset_y = (height - range_y * self.scale) / 2
 
-        # ¿Debemos invertir Y? Solo para BAMBOO_PATTERN que usa coordenadas de imagen.
-        self.flip_y = view_name == ViewType.BAMBOO_PATTERN.value
+        # No invertimos Y para ninguna vista ya que los datos están en orden correcto.
+        self.flip_y = False
 
     # --------------------------------------------------------------------- #
     #                    Conversión dominio <-> canvas                      #
